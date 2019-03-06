@@ -251,16 +251,28 @@ func Marshal(v interface{}) ([]byte, error) {
 		return nil, err
 	}
 	output := e.Bytes()
-	typ := reflect.TypeOf(v)
-	if typ.Kind() == reflect.Ptr {
-		typ = typ.Elem()
-	}
-	if typ == payloadType {
-		// @todo(marius): fix this ugly hack
-		output = bytes.Replace(output, []byte(`,"Obj":{`), []byte(","), 1)
-		output = output[:len(output)-1]
+	if v == nil {
+		return output, nil
 	}
 
+	repl := func (dat *[]byte) {
+		// @todo(marius): fix this ugly hack
+		o := *dat
+		if bytes.Contains(o, []byte(`"Obj":null`)) {
+			o = bytes.Replace(o, []byte(`,"Obj":null`), []byte(""), 1)
+		} else {
+			o = bytes.Replace(o, []byte(`,"Obj":{`), []byte(","), 1)
+			o = o[:len(o)-1]
+		}
+		*dat = o
+	}
+
+	switch v.(type) {
+	case payloadWithContext:
+		repl(&output)
+	case *payloadWithContext:
+		repl(&output)
+	}
 	return output, nil
 }
 

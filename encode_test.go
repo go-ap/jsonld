@@ -2,6 +2,7 @@ package jsonld
 
 import (
 	"bytes"
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -75,7 +76,22 @@ func TestMarshalNullContext(t *testing.T) {
 		t.Errorf("%s", errJ)
 	}
 	if !bytes.Equal(outL, outJ) {
-		t.Errorf("Json output should be euqlal %q, received %q", outL, outJ)
+		t.Errorf("Json output should be equal %q, received %q", outL, outJ)
+	}
+}
+
+func TestMarshalNullValue(t *testing.T) {
+	var a = interface{} (nil)
+
+	url := "http://www.habarnam.ro"
+	p := WithContext(IRI(url))
+	outL, errL := p.Marshal(a)
+	if errL != nil {
+		t.Errorf("%s", errL)
+	}
+	outJ := []byte(fmt.Sprintf(`{"@context":"%s"}`, url))
+	if !bytes.Equal(outL, outJ) {
+		t.Errorf("Json output should be equal %q, received %q", outL, outJ)
 	}
 }
 
