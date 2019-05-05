@@ -6,7 +6,6 @@ GO111MODULE=on
 test:
 	$(TEST) $(TEST_FLAGS) $(TEST_TARGET)
 
-
 coverprofile: TEST_FLAGS += -covermode=count -coverprofile=jsonld.coverprofile
 coverprofile: test
 
