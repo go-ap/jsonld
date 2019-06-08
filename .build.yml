@@ -1,0 +1,27 @@
+image: archlinux
+secrets:
+- 36f65f02-9e26-497e-94d7-f1cd8ba3ef7a
+packages:
+  - go
+  - postgresql
+sources:
+  - https://github.com/go-ap/jsonld
+environment:
+  GO111MODULE: 'on'
+tasks:
+  - setup: |
+      cd jsonld && go mod download
+  - tests: |
+      cd jsonld
+      go test -v ./...
+  - coverage: |
+      set -a +x
+      source ~/.code-cov.sh
+      cd jsonld
+      go test -cover -coverprofile jsonld.coverprofile ./...
+      GIT_SHA=$(git rev-parse --verify HEAD)
+      GIT_BRANCH=$(git name-rev --name-only HEAD)
+      curl -X POST \
+          --data-binary @jsonld.coverprofile \
+          -H 'Accept: application/json' \
+          "https://codecov.io/upload/v2?commit=${GIT_SHA}&token=${JSONLD_TOKEN}&branch=${GIT_BRANCH}&service=custom"
