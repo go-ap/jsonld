@@ -12,15 +12,13 @@ tasks:
   - setup: |
       cd jsonld && go mod download
   - tests: |
-      cd jsonld
-      go test -v ./...
+      cd jsonld && make test
   - coverage: |
       set -a +x
-      source ~/.code-cov.sh
-      cd jsonld
-      go test -cover -coverprofile jsonld.coverprofile ./...
+      cd jsonld && make coverage
       GIT_SHA=$(git rev-parse --verify HEAD)
       GIT_BRANCH=$(git name-rev --name-only HEAD)
+      source ~/.code-cov.sh
       curl -X POST \
           --data-binary @jsonld.coverprofile \
           -H 'Accept: application/json' \
