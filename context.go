@@ -58,6 +58,9 @@ const (
 	GraphKw Term = "@graph"
 )
 
+// ContentType is the content type of JsonLD documents
+const ContentType = `application/ld+json; profile="https://www.w3.org/ns/activitystreams`
+
 type (
 	// Ref basic type
 	LangRef string
