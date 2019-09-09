@@ -246,7 +246,7 @@ type UnsupportedTypeError struct {
 func Marshal(v interface{}) ([]byte, error) {
 	e := &encodeState{}
 
-	err := e.marshal(v, encOpts{escapeHTML: true})
+	err := e.marshal(v, encOpts{escapeHTML: false})
 	if err != nil {
 		return nil, err
 	}
