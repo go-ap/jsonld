@@ -34,6 +34,7 @@ const (
 	tagLabel       = "jsonld"
 	tagOmitEmpty   = "omitempty"
 	tagCollapsible = "collapsible"
+	tagNoMarshal   = "nomarshal"
 )
 
 type payloadWithContext struct {
@@ -69,6 +70,7 @@ type Tag struct {
 	Ignore      bool
 	OmitEmpty   bool
 	Collapsible bool
+	NoMarshal   bool
 }
 
 // LoadTag used by structs from the ActivityPub package to Marshal and Unmarshal to/from JSON-LD
@@ -89,6 +91,7 @@ func LoadTag(tag reflect.StructTag) (Tag, bool) {
 	t := Tag{
 		OmitEmpty:   cont(val, tagOmitEmpty),
 		Collapsible: cont(val, tagCollapsible),
+		NoMarshal:   cont(val, tagNoMarshal),
 	}
 	t.Name, t.Ignore = func(v string) (string, bool) {
 		if len(v) > 0 && v != "_" {
@@ -255,7 +258,7 @@ func Marshal(v interface{}) ([]byte, error) {
 		return output, nil
 	}
 
-	repl := func (dat *[]byte) {
+	repl := func(dat *[]byte) {
 		// @todo(marius): fix this ugly hack
 		o := *dat
 		if bytes.Contains(o, []byte(`"Obj":null`)) {
@@ -1191,6 +1194,11 @@ func typeFields(t reflect.Type) []field {
 				tag := sf.Tag.Get(tagLabel)
 				if tag == "-" {
 					continue
+				}
+				if myTag, ok := LoadTag(sf.Tag); ok {
+					if myTag.NoMarshal {
+						continue
+					}
 				}
 				name, opts := parseTag(tag)
 				if !isValidTag(name) {
