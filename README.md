@@ -8,8 +8,6 @@
 
 Basic lib for using [activity pub](https://www.w3.org/TR/activitypub/#Overview) API in Go.
 
-Please see issue [#1](https://github.com/go-ap/activitypub.go/issues/1) before considering this project for real life applications.
-
 ## Usage
 
 ```go
