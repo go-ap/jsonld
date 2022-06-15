@@ -28,7 +28,7 @@ import (
 	"unicode/utf8"
 )
 
-var Ctxt Collapsible
+var Ctxt []Collapsible
 
 const (
 	tagLabel       = "jsonld"
@@ -38,9 +38,9 @@ const (
 )
 
 type payloadWithContext struct {
-	Context Collapsible `jsonld:"@context,omitempty,collapsible"`
-	ID      interface{} `jsonld:"@id,omitempty,collapsible"`
-	Type    interface{} `jsonld:"@type,omitempty,collapsible"`
+	Context []Collapsible `jsonld:"@context,omitempty,collapsible"`
+	ID      interface{}   `jsonld:"@id,omitempty,collapsible"`
+	Type    interface{}   `jsonld:"@type,omitempty,collapsible"`
 	Obj     interface{}
 }
 
@@ -49,7 +49,7 @@ func (p payloadWithContext) Collapse() interface{} {
 }
 
 // WithContext
-func WithContext(c Collapsible) payloadWithContext {
+func WithContext(c ...Collapsible) payloadWithContext {
 	Ctxt = c
 	return payloadWithContext{
 		Context: c,
