@@ -81,7 +81,7 @@ func TestMarshalNullContext(t *testing.T) {
 }
 
 func TestMarshalNullValue(t *testing.T) {
-	var a = interface{} (nil)
+	var a = interface{}(nil)
 
 	url := "http://www.habarnam.ro"
 	p := WithContext(IRI(url))
@@ -91,7 +91,7 @@ func TestMarshalNullValue(t *testing.T) {
 	}
 	outJ := []byte(fmt.Sprintf(`{"@context":"%s"}`, url))
 	if !bytes.Equal(outL, outJ) {
-		t.Errorf("Json output should be equal %q, received %q", outL, outJ)
+		t.Errorf("JsonLD output is wrong: %s, expected %s", outL, outJ)
 	}
 }
 

@@ -694,22 +694,6 @@ func (se *structEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
 		} else {
 			e.WriteByte(',')
 		}
-		// TODO(marius): how bad is this?
-		//opts.Collapsible = f.Collapsible
-		/*
-			if f.Collapsible {
-				collapsingMethod := fv.MethodByName("Collapse")
-				if !collapsingMethod.IsValid() || collapsingMethod.IsNil() {
-					continue
-				}
-				e.string(f.Name, opts.escapeHTML)
-				e.WriteByte(':')
-
-				content := collapsingMethod.Call(nil)[0].Bytes()
-				e.Write(content)
-				continue
-			}
-		*/
 		e.string(f.name, opts.escapeHTML)
 		e.WriteByte(':')
 		opts.quoted = f.quoted
@@ -829,8 +813,12 @@ type arrayEncoder struct {
 }
 
 func (ae *arrayEncoder) encode(e *encodeState, v reflect.Value, opts encOpts) {
-	e.WriteByte('[')
 	n := v.Len()
+	if n == 1 {
+		ae.elemEnc(e, v.Index(0), opts)
+		return
+	}
+	e.WriteByte('[')
 	for i := 0; i < n; i++ {
 		if i > 0 {
 			e.WriteByte(',')
