@@ -1,6 +1,4 @@
 image: archlinux
-secrets:
-- 72c9ab0b-ed5f-4291-bab7-30b361be94a6
 packages:
   - go
   - postgresql
@@ -18,8 +16,3 @@ tasks:
       cd jsonld && make coverage
       GIT_SHA=$(git rev-parse --verify HEAD)
       GIT_BRANCH=$(git name-rev --name-only HEAD)
-      source ~/.code-cov.sh
-      curl -X POST \
-          --data-binary @jsonld.coverprofile \
-          -H 'Accept: application/json' \
-          "https://codecov.io/upload/v2?commit=${GIT_SHA}&token=${JSONLD_TOKEN}&branch=${GIT_BRANCH}&service=custom" || true
