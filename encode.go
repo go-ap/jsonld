@@ -261,11 +261,18 @@ func Marshal(v interface{}) ([]byte, error) {
 	repl := func(dat *[]byte) {
 		// @todo(marius): fix this ugly hack
 		o := *dat
-		if bytes.Contains(o, []byte(`"Obj":null`)) {
-			o = bytes.Replace(o, []byte(`,"Obj":null`), []byte(""), 1)
-		} else {
+		if bytes.Contains(o, []byte(`"Obj":{`)) {
 			o = bytes.Replace(o, []byte(`,"Obj":{`), []byte(","), 1)
 			o = o[:len(o)-1]
+		} else if bytes.Contains(o, []byte(`"Obj":null`)) {
+			o = bytes.Replace(o, []byte(`,"Obj":null`), []byte(""), 1)
+		} else {
+			contextIndex := bytes.Index(o, []byte(`,"Obj":`)) + len([]byte(`,"Obj":`))
+			if contextIndex < len(o)-1 {
+				o = o[contextIndex : len(o)-1]
+			} else {
+				o = nil
+			}
 		}
 		*dat = o
 	}

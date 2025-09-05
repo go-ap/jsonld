@@ -81,7 +81,7 @@ func TestMarshalNullContext(t *testing.T) {
 }
 
 func TestMarshalNullValue(t *testing.T) {
-	var a = interface{}(nil)
+	var a = any(nil)
 
 	url := "http://www.habarnam.ro"
 	p := WithContext(IRI(url))
@@ -90,6 +90,22 @@ func TestMarshalNullValue(t *testing.T) {
 		t.Errorf("%s", errL)
 	}
 	outJ := []byte(fmt.Sprintf(`{"@context":"%s"}`, url))
+	if !bytes.Equal(outL, outJ) {
+		t.Errorf("JsonLD output is wrong: %s, expected %s", outL, outJ)
+	}
+}
+
+func TestMarshalSliceValue(t *testing.T) {
+	var a = any([]IRI{"http://example.com", "http://example.com/1"})
+
+	url := "http://www.habarnam.ro"
+	p := WithContext(IRI(url))
+	outL, errL := p.Marshal(a)
+	if errL != nil {
+		t.Errorf("%s", errL)
+	}
+	// NOTE(marius): currently for slices we strip the context
+	outJ := []byte(`["http://example.com","http://example.com/1"]`)
 	if !bytes.Equal(outL, outJ) {
 		t.Errorf("JsonLD output is wrong: %s, expected %s", outL, outJ)
 	}
@@ -115,7 +131,7 @@ func TestIsEmpty(t *testing.T) {
 	if !isEmptyValue(reflect.ValueOf(d)) {
 		t.Errorf("Invalid empty value %v", d)
 	}
-	var e *interface{}
+	var e *any
 	if !isEmptyValue(reflect.ValueOf(e)) {
 		t.Errorf("Invalid empty value %v", e)
 	}
@@ -152,5 +168,4 @@ func TestWithContext_MarshalJSON(t *testing.T) {
 			t.Errorf("%q not found in %s", v.String(), data)
 		}
 	}
-
 }
