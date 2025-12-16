@@ -28,8 +28,6 @@ import (
 	"unicode/utf8"
 )
 
-var Ctxt []Collapsible
-
 const (
 	tagLabel       = "jsonld"
 	tagOmitEmpty   = "omitempty"
@@ -50,7 +48,6 @@ func (p payloadWithContext) Collapse() interface{} {
 
 // WithContext
 func WithContext(c ...Collapsible) payloadWithContext {
-	Ctxt = c
 	return payloadWithContext{
 		Context: c,
 	}
