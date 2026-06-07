@@ -1,18 +1,27 @@
 image: archlinux
 packages:
   - go
-  - postgresql
+  - golangci-lint
 sources:
   - https://github.com/go-ap/jsonld
 environment:
   GO111MODULE: 'on'
 tasks:
   - setup: |
-      cd jsonld && go mod download
+      cd jsonld
+      go mod download
+  - fmt: |
+      cd jsonld
+      test -z $(gofmt -l .)
   - tests: |
-      cd jsonld && make test
+      cd jsonld
+      make test
   - coverage: |
       set -a +x
-      cd jsonld && make coverage
-      GIT_SHA=$(git rev-parse --verify HEAD)
-      GIT_BRANCH=$(git name-rev --name-only HEAD)
+      cd jsonld
+      git switch -C master origin/master
+      make coverage
+      #go run github.com/mattn/goveralls@latest -flagname unit-tests -service=${CI_NAME} -coverprofile jsonld.coverprofile -repotokenfile ~/.coveralls.tok
+  - lint: |
+      cd jsonld
+      golangci-lint run || true
