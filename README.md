@@ -13,3 +13,13 @@ Basic lib for using [activity pub](https://www.w3.org/TR/activitypub/#Overview) 
 ```go
 import "github.com/go-ap/jsonld"
 ```
+
+## Extended documentation
+
+For more information about how the module works in the scope of the
+GoActivityPub library, see the [expanded
+documentation](https://go-activitypub.federated.id/lib/modules/#jsonld).
+
+For discussions about the projects you can write to the discussions mailing list: [~mariusor/go-activitypub-discuss@lists.sr.ht](mailto:~mariusor/go-activitypub-discuss@lists.sr.ht)
+
+For patches and bug reports please use the dev mailing list: [~mariusor/go-activitypub-dev@lists.sr.ht](mailto:~mariusor/go-activitypub-dev@lists.sr.ht)
